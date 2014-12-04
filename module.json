@@ -1,0 +1,25 @@
+{
+  "name": "mbed-example-asynch-spi",
+  "version": "0.0.0",
+  "description": "Asynch SPI example",
+  "keywords": [
+    "mbed",
+    "cpputest",
+    "spi"
+  ],
+  "author": "brendan.moran@arm.com",
+  "licenses": [
+    {
+      "url": "https://spdx.org/licenses/Apache-2.0",
+      "type": "Apache-2.0"
+    }
+  ],
+  "extraIncludes": [
+  ],
+  "dependencies": {
+    "mbed": "git@github.com:mbedmicro/mbed_private.git",
+    "mbed-cpputest" : "git@github.com:ARMmbed/mbed-cpputest.git"
+  },
+  "targetDependencies": {},
+  "bin": "./source"
+}
