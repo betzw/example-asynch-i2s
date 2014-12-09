@@ -1,4 +1,18 @@
-
+/* mbed Microcontroller Library
+ * Copyright (c) 2013 ARM Limited
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 #include <TestHarness.h>
 #include <mbed.h>
 #include <SPI.h>
@@ -31,9 +45,9 @@
 #error Target not supported
 #endif
 
-volatile uint32_t  why;
+volatile int why;
 volatile bool complete;
-void cbdone(uint32_t event) {
+void cbdone(int event) {
     complete = true;
     why = event;
 }
@@ -113,7 +127,7 @@ TEST(SPI_Master_Asynchronous, short_tx_0_rx)
 {
     int rc;
     // Write a buffer of Short Transfer length.
-    rc = obj->write((void *)tx_buf,SHORT_XFR,NULL,0,-1,cbdone);
+    rc = obj->write(tx_buf,SHORT_XFR,NULL,0,cbdone, -1);
     CHECK_EQUAL(0, rc);
 
     while (!complete);
@@ -132,7 +146,7 @@ TEST(SPI_Master_Asynchronous, short_tx_0_rx_nn)
 {
     int rc;
     // Write a buffer of Short Transfer length.
-    rc = obj->write((void *)tx_buf,SHORT_XFR,(void *)rx_buf,0,-1,cbdone);
+    rc = obj->write(tx_buf,SHORT_XFR,rx_buf,0,cbdone, -1);
     CHECK_EQUAL(0, rc);
 
     while (!complete);
@@ -150,7 +164,7 @@ TEST(SPI_Master_Asynchronous, 0_tx_short_rx)
 {
     int rc;
     // Read a buffer of Short Transfer length.
-    rc = obj->write(NULL,0,(void *)rx_buf,SHORT_XFR,-1,cbdone);
+    rc = obj->write(NULL,0,rx_buf,SHORT_XFR,cbdone, -1);
     CHECK_EQUAL(0, rc);
 
     while (!complete);
@@ -171,7 +185,7 @@ TEST(SPI_Master_Asynchronous, 0_tx_nn_short_rx)
 {
     int rc;
     // Read a buffer of Short Transfer length.
-    rc = obj->write((void *)tx_buf,0,(void *)rx_buf,SHORT_XFR,-1,cbdone);
+    rc = obj->write(tx_buf,0,rx_buf,SHORT_XFR,cbdone, -1);
     CHECK_EQUAL(0, rc);
 
     while (!complete);
@@ -191,7 +205,7 @@ TEST(SPI_Master_Asynchronous, short_tx_short_rx)
 {
     int rc;
     // Write/Read a buffer of Long Transfer length.
-    rc = obj->write((void *)tx_buf,SHORT_XFR,(void *)rx_buf,SHORT_XFR,-1,cbdone);
+    rc = obj->write(tx_buf,SHORT_XFR,rx_buf,SHORT_XFR,cbdone, -1);
     CHECK_EQUAL(0, rc);
 
     while (!complete);
@@ -210,7 +224,7 @@ TEST(SPI_Master_Asynchronous, long_tx_long_rx)
 {
     int rc;
     // Write/Read a buffer of Long Transfer length.
-    rc = obj->write((void *)tx_buf,LONG_XFR,(void *)rx_buf,LONG_XFR,-1,cbdone);
+    rc = obj->write(tx_buf,LONG_XFR,rx_buf,LONG_XFR,cbdone, -1);
     CHECK_EQUAL(0, rc);
 
     while (!complete);
@@ -230,7 +244,7 @@ TEST(SPI_Master_Asynchronous, long_tx_short_rx)
 {
     int rc;
     // Write a buffer of Short Transfer length.
-    rc = obj->write((void *)tx_buf,LONG_XFR,(void *)rx_buf,SHORT_XFR,-1,cbdone);
+    rc = obj->write(tx_buf,LONG_XFR,rx_buf,SHORT_XFR,cbdone, -1);
     CHECK_EQUAL(0, rc);
 
     while (!complete);
@@ -250,7 +264,7 @@ TEST(SPI_Master_Asynchronous, short_tx_long_rx)
 {
     int rc;
     // Write a buffer of Short Transfer length.
-    rc = obj->write((void *)tx_buf,SHORT_XFR,(void *)rx_buf,LONG_XFR,-1,cbdone);
+    rc = obj->write(tx_buf,SHORT_XFR,rx_buf,LONG_XFR,cbdone, -1);
     CHECK_EQUAL(0, rc);
 
     while (!complete);

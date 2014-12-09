@@ -1,6 +1,6 @@
 {
   "name": "mbed-example-asynch-spi",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Asynch SPI example",
   "keywords": [
     "mbed",
@@ -17,8 +17,8 @@
   "extraIncludes": [
   ],
   "dependencies": {
-    "mbed": "git@github.com:mbedmicro/mbed_private.git",
-    "mbed-cpputest" : "git@github.com:ARMmbed/mbed-cpputest.git"
+    "mbed": "mbedmicro/mbed_private#dev_async_hal_yotta",
+    "mbed-cpputest" : "ARMmbed/mbed-cpputest#master"
   },
   "targetDependencies": {},
   "bin": "./source"
