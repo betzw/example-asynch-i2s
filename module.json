@@ -17,7 +17,7 @@
   "extraIncludes": [
   ],
   "dependencies": {
-    "mbed": "mbedmicro/mbed_private#dev_async_hal_yotta",
+    "mbed": "ARMmbed/mbed-sdk",
     "mbed-cpputest" : "ARMmbed/mbed-cpputest#master"
   },
   "targetDependencies": {},
