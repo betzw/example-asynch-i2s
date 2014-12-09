@@ -2,9 +2,27 @@
 
 ## The demo application
 
-This repository is an example for asynchronous SPI, a test unit with defined test cases for asynchronous SPI methods, using a loopback (MOSI connected to MISO). It currently supports K64F board.
+This repository is an example for asynchronous SPI, a test unit with defined test cases for asynchronous SPI methods, using a loopback (MOSI connected to MISO).
 
 Please look at the target's pin definition in the spi_asynch.cpp file (TEST_MOSI_PIN and TEST_MISO_PIN) , and connect them together.
+
+Currently only the following configuration is supported:
+- Freescale FRDM-K64F board
+- GCC ARM Embedded Toolchain
+
+### Installation
+This is a yotta executable. You need the latest [yotta](https://github.com/ARMmbed/yotta) release version (latest tested: 0.0.36) and all of its dependencies. See also the [yotta documentation](http://armmbed.github.io/yotta/) for further details about the installation and the build process.
+
+Assuming you have cloned this repository, move to its folder. Select target, install and build:
+```bash
+cd /path/to/mbed-example-asynch-spi
+yotta target frdm-k64f-gcc
+yotta install
+yotta build
+```
+
+The resulting binary file will be located in `build/frdm-k64f-gcc/source/`. After flashing, you can observe the UART output on the USB serial port.
+
 
 The output on the console should be:
 ```
@@ -32,7 +50,7 @@ This user guide describes the non-blocking methods which are array oriented. The
 ### Asynch methods
 
 The SPI API was expanded by three methods, write().
-The write method starts the non-blocking transfer. There are three write methods, each one uses different buffer width. The buffer width defines how are data read/written from/to buffers. They do not reflect how are data transferred. To change data bits, please use format method.
+The write method starts the non-blocking transfer. There are three write methods, each one uses different buffer width. The buffer width defines how are data read/written from/to buffers. They do not reflect the format of transferred data. To change data bits, please use format method.
 
 The tx_buffer can be a pointer to a TX buffer or NULL. If NULL is passed, the default SPI value is transmitted, to be able to receive data. If rx_buffer is NULL, received data are ignored.
 ```
