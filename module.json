@@ -16,7 +16,7 @@
   ],
   "extraIncludes": [],
   "dependencies": {
-    "mbed": "ARMmbed/mbed-sdk",
+    "mbed": "ARMmbed/mbed-sdk#3.0.0-alpha1",
     "mbed-cpputest": "ARMmbed/mbed-cpputest#~0.0.2"
   },
   "targetDependencies": {},
