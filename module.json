@@ -18,7 +18,7 @@
   ],
   "dependencies": {
     "mbed": "ARMmbed/mbed-sdk",
-    "mbed-cpputest" : "ARMmbed/mbed-cpputest#master"
+    "mbed-cpputest" : "ARMmbed/mbed-cpputest#~0.0.2"
   },
   "targetDependencies": {},
   "bin": "./source"
