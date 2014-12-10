@@ -1,6 +1,6 @@
 {
   "name": "mbed-example-asynch-spi",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Asynch SPI example",
   "keywords": [
     "mbed",
@@ -14,11 +14,10 @@
       "type": "Apache-2.0"
     }
   ],
-  "extraIncludes": [
-  ],
+  "extraIncludes": [],
   "dependencies": {
     "mbed": "ARMmbed/mbed-sdk",
-    "mbed-cpputest" : "ARMmbed/mbed-cpputest#~0.0.2"
+    "mbed-cpputest": "ARMmbed/mbed-cpputest#~0.0.2"
   },
   "targetDependencies": {},
   "bin": "./source"
