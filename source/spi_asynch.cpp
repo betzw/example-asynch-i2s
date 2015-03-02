@@ -127,7 +127,7 @@ TEST(SPI_Master_Asynchronous, short_tx_0_rx)
 {
     int rc;
     // Write a buffer of Short Transfer length.
-    rc = obj->write(tx_buf,SHORT_XFR,NULL,0,cbdone, -1);
+    rc = obj->transfer(tx_buf,SHORT_XFR,NULL,0,cbdone, -1);
     CHECK_EQUAL(0, rc);
 
     while (!complete);
@@ -146,7 +146,7 @@ TEST(SPI_Master_Asynchronous, short_tx_0_rx_nn)
 {
     int rc;
     // Write a buffer of Short Transfer length.
-    rc = obj->write(tx_buf,SHORT_XFR,rx_buf,0,cbdone, -1);
+    rc = obj->transfer(tx_buf,SHORT_XFR,rx_buf,0,cbdone, -1);
     CHECK_EQUAL(0, rc);
 
     while (!complete);
@@ -164,7 +164,7 @@ TEST(SPI_Master_Asynchronous, 0_tx_short_rx)
 {
     int rc;
     // Read a buffer of Short Transfer length.
-    rc = obj->write(NULL,0,rx_buf,SHORT_XFR,cbdone, -1);
+    rc = obj->transfer(NULL,0,rx_buf,SHORT_XFR,cbdone, -1);
     CHECK_EQUAL(0, rc);
 
     while (!complete);
@@ -185,7 +185,7 @@ TEST(SPI_Master_Asynchronous, 0_tx_nn_short_rx)
 {
     int rc;
     // Read a buffer of Short Transfer length.
-    rc = obj->write(tx_buf,0,rx_buf,SHORT_XFR,cbdone, -1);
+    rc = obj->transfer(tx_buf,0,rx_buf,SHORT_XFR,cbdone, -1);
     CHECK_EQUAL(0, rc);
 
     while (!complete);
@@ -205,7 +205,7 @@ TEST(SPI_Master_Asynchronous, short_tx_short_rx)
 {
     int rc;
     // Write/Read a buffer of Long Transfer length.
-    rc = obj->write(tx_buf,SHORT_XFR,rx_buf,SHORT_XFR,cbdone, -1);
+    rc = obj->transfer(tx_buf,SHORT_XFR,rx_buf,SHORT_XFR,cbdone, -1);
     CHECK_EQUAL(0, rc);
 
     while (!complete);
@@ -224,7 +224,7 @@ TEST(SPI_Master_Asynchronous, long_tx_long_rx)
 {
     int rc;
     // Write/Read a buffer of Long Transfer length.
-    rc = obj->write(tx_buf,LONG_XFR,rx_buf,LONG_XFR,cbdone, -1);
+    rc = obj->transfer(tx_buf,LONG_XFR,rx_buf,LONG_XFR,cbdone, -1);
     CHECK_EQUAL(0, rc);
 
     while (!complete);
@@ -238,13 +238,14 @@ TEST(SPI_Master_Asynchronous, long_tx_long_rx)
     // Check that remaining portion of the receive buffer contains the rx test byte
     cmpnbufc(TEST_BYTE_RX,rx_buf,LONG_XFR,sizeof(rx_buf),__FILE__,__LINE__);
 }
+
 // SPI write tx length: 2xFIFO, ascending, read length: FIFO-1
 //   Checks: Receive buffer == tx buffer, completion event, read buffer overflow
 TEST(SPI_Master_Asynchronous, long_tx_short_rx)
 {
     int rc;
     // Write a buffer of Short Transfer length.
-    rc = obj->write(tx_buf,LONG_XFR,rx_buf,SHORT_XFR,cbdone, -1);
+    rc = obj->transfer(tx_buf,LONG_XFR,rx_buf,SHORT_XFR,cbdone, -1);
     CHECK_EQUAL(0, rc);
 
     while (!complete);
@@ -264,7 +265,7 @@ TEST(SPI_Master_Asynchronous, short_tx_long_rx)
 {
     int rc;
     // Write a buffer of Short Transfer length.
-    rc = obj->write(tx_buf,SHORT_XFR,rx_buf,LONG_XFR,cbdone, -1);
+    rc = obj->transfer(tx_buf,SHORT_XFR,rx_buf,LONG_XFR,cbdone, -1);
     CHECK_EQUAL(0, rc);
 
     while (!complete);
@@ -279,6 +280,28 @@ TEST(SPI_Master_Asynchronous, short_tx_long_rx)
     cmpnbufc(SPI_FILL_WORD,rx_buf,SHORT_XFR,LONG_XFR,__FILE__,__LINE__);
     // Check that remaining portion of the receive buffer contains the rx test byte
     cmpnbufc(TEST_BYTE_RX,rx_buf,LONG_XFR,sizeof(rx_buf),__FILE__,__LINE__);
+}
+
+TEST(SPI_Master_Asynchronous, queue_test)
+{
+    int rc;
+    // Write/Read a buffer of Long Transfer length.
+    rc = obj->transfer(tx_buf,4,rx_buf,4,cbdone, 0);
+    CHECK_EQUAL(0, rc);
+    rc = obj->transfer(&tx_buf[4],4, &rx_buf[4],4,cbdone, 0);
+    CHECK_EQUAL(0, rc);
+    rc = obj->transfer(&tx_buf[8],4, &rx_buf[8],4,cbdone, -1);
+    CHECK_EQUAL(0, rc);
+
+    while (!complete);
+
+    // Make sure that the callback fires.
+    CHECK_EQUAL(SPI_EVENT_COMPLETE, why);
+
+    // Check that the rx buffer contains the tx bytes
+    cmpnbuf(tx_buf,rx_buf,0,12,__FILE__,__LINE__);
+    // Check that remaining portion of the receive buffer contains the rx test byte
+    cmpnbufc(TEST_BYTE_RX,rx_buf,12,sizeof(rx_buf),__FILE__,__LINE__);
 }
 
 // On DMA-enabled platforms, add an additional test with large transfers and DMA.
