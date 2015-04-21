@@ -59,12 +59,14 @@ TEST_GROUP(SPI_Master_Asynchronous)
     uint8_t rx_buf[LONG_XFR];
     SPI *obj;
     DigitalOut *cs;
+    event_callback_t callback;
 
     void setup() {
         obj = new SPI(TEST_MOSI_PIN, TEST_MISO_PIN, TEST_SCLK_PIN);
         cs = new DigitalOut(TEST_CS_PIN);
         complete = false;
         why = 0;
+        callback.attach(cbdone);
 
         // Set the default value of tx_buf
         for (uint32_t i = 0; i < sizeof(tx_buf); i++) {
@@ -127,7 +129,7 @@ TEST(SPI_Master_Asynchronous, short_tx_0_rx)
 {
     int rc;
     // Write a buffer of Short Transfer length.
-    rc = obj->transfer(tx_buf,SHORT_XFR,NULL,0,cbdone, -1);
+    rc = obj->transfer( tx_buf,SHORT_XFR,NULL,0, callback, -1);
     CHECK_EQUAL(0, rc);
 
     while (!complete);
@@ -146,7 +148,7 @@ TEST(SPI_Master_Asynchronous, short_tx_0_rx_nn)
 {
     int rc;
     // Write a buffer of Short Transfer length.
-    rc = obj->transfer(tx_buf,SHORT_XFR,rx_buf,0,cbdone, -1);
+    rc = obj->transfer( tx_buf,SHORT_XFR,rx_buf,0,callback, -1);
     CHECK_EQUAL(0, rc);
 
     while (!complete);
@@ -164,7 +166,7 @@ TEST(SPI_Master_Asynchronous, 0_tx_short_rx)
 {
     int rc;
     // Read a buffer of Short Transfer length.
-    rc = obj->transfer(NULL,0,rx_buf,SHORT_XFR,cbdone, -1);
+    rc = obj->transfer( NULL,0,rx_buf,SHORT_XFR,callback, -1);
     CHECK_EQUAL(0, rc);
 
     while (!complete);
@@ -185,7 +187,7 @@ TEST(SPI_Master_Asynchronous, 0_tx_nn_short_rx)
 {
     int rc;
     // Read a buffer of Short Transfer length.
-    rc = obj->transfer(tx_buf,0,rx_buf,SHORT_XFR,cbdone, -1);
+    rc = obj->transfer(tx_buf,0,rx_buf,SHORT_XFR,callback, -1);
     CHECK_EQUAL(0, rc);
 
     while (!complete);
@@ -205,7 +207,7 @@ TEST(SPI_Master_Asynchronous, short_tx_short_rx)
 {
     int rc;
     // Write/Read a buffer of Long Transfer length.
-    rc = obj->transfer(tx_buf,SHORT_XFR,rx_buf,SHORT_XFR,cbdone, -1);
+    rc = obj->transfer( tx_buf,SHORT_XFR,rx_buf,SHORT_XFR,callback, -1);
     CHECK_EQUAL(0, rc);
 
     while (!complete);
@@ -224,7 +226,7 @@ TEST(SPI_Master_Asynchronous, long_tx_long_rx)
 {
     int rc;
     // Write/Read a buffer of Long Transfer length.
-    rc = obj->transfer(tx_buf,LONG_XFR,rx_buf,LONG_XFR,cbdone, -1);
+    rc = obj->transfer(tx_buf,LONG_XFR,rx_buf,LONG_XFR,callback, -1);
     CHECK_EQUAL(0, rc);
 
     while (!complete);
@@ -245,7 +247,7 @@ TEST(SPI_Master_Asynchronous, long_tx_short_rx)
 {
     int rc;
     // Write a buffer of Short Transfer length.
-    rc = obj->transfer(tx_buf,LONG_XFR,rx_buf,SHORT_XFR,cbdone, -1);
+    rc = obj->transfer(tx_buf,LONG_XFR,rx_buf,SHORT_XFR,callback, -1);
     CHECK_EQUAL(0, rc);
 
     while (!complete);
@@ -265,7 +267,7 @@ TEST(SPI_Master_Asynchronous, short_tx_long_rx)
 {
     int rc;
     // Write a buffer of Short Transfer length.
-    rc = obj->transfer(tx_buf,SHORT_XFR,rx_buf,LONG_XFR,cbdone, -1);
+    rc = obj->transfer(tx_buf,SHORT_XFR,rx_buf,LONG_XFR,callback, -1);
     CHECK_EQUAL(0, rc);
 
     while (!complete);
@@ -286,11 +288,11 @@ TEST(SPI_Master_Asynchronous, queue_test)
 {
     int rc;
     // Write/Read a buffer of Long Transfer length.
-    rc = obj->transfer(tx_buf,4,rx_buf,4,cbdone, 0);
+    rc = obj->transfer( tx_buf,4,rx_buf,4,callback, 0);
     CHECK_EQUAL(0, rc);
-    rc = obj->transfer(&tx_buf[4],4, &rx_buf[4],4,cbdone, 0);
+    rc = obj->transfer( &tx_buf[4],4, &rx_buf[4],4,callback, 0);
     CHECK_EQUAL(0, rc);
-    rc = obj->transfer(&tx_buf[8],4, &rx_buf[8],4,cbdone, -1);
+    rc = obj->transfer( &tx_buf[8],4, &rx_buf[8],4,callback, -1);
     CHECK_EQUAL(0, rc);
 
     while (!complete);
