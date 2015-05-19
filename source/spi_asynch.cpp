@@ -176,7 +176,7 @@ TEST(SPI_Master_Asynchronous, 0_tx_short_rx)
 
     // TODO: Check for null pointer exception
     // Check that the receive buffer contains the fill byte.
-    cmpnbufc(SPI_FILL_WORD,rx_buf,0,SHORT_XFR,__FILE__,__LINE__);
+    cmpnbufc((uint8_t)SPI_FILL_WORD,rx_buf,0,SHORT_XFR,__FILE__,__LINE__);
     // Check that remaining portion of the receive buffer contains the rx test byte
     cmpnbufc(TEST_BYTE_RX,rx_buf,SHORT_XFR,sizeof(rx_buf),__FILE__,__LINE__);
 }
@@ -196,7 +196,7 @@ TEST(SPI_Master_Asynchronous, 0_tx_nn_short_rx)
     CHECK_EQUAL(SPI_EVENT_COMPLETE, why);
 
     // Check that the receive buffer contains the fill byte.
-    cmpnbufc(SPI_FILL_WORD,rx_buf,0,SHORT_XFR,__FILE__,__LINE__);
+    cmpnbufc((uint8_t)SPI_FILL_WORD,rx_buf,0,SHORT_XFR,__FILE__,__LINE__);
     // Check that remaining portion of the receive buffer contains the rx test byte
     cmpnbufc(TEST_BYTE_RX,rx_buf,SHORT_XFR,sizeof(rx_buf),__FILE__,__LINE__);
 }
@@ -279,7 +279,7 @@ TEST(SPI_Master_Asynchronous, short_tx_long_rx)
     // Check that the rx buffer contains the tx bytes
     cmpnbuf(tx_buf,rx_buf,0,SHORT_XFR,__FILE__,__LINE__);
     // Check that the rx buffer contains the tx fill bytes
-    cmpnbufc(SPI_FILL_WORD,rx_buf,SHORT_XFR,LONG_XFR,__FILE__,__LINE__);
+    cmpnbufc((uint8_t)SPI_FILL_WORD,rx_buf,SHORT_XFR,LONG_XFR,__FILE__,__LINE__);
     // Check that remaining portion of the receive buffer contains the rx test byte
     cmpnbufc(TEST_BYTE_RX,rx_buf,LONG_XFR,sizeof(rx_buf),__FILE__,__LINE__);
 }
