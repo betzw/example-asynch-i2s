@@ -17,8 +17,8 @@
   ],
   "extraIncludes": [],
   "dependencies": {
-    "mbed": "ARMmbed/mbed-sdk-private",
-    "mbed-cpputest": "ARMmbed/mbed-cpputest-private#~0.0.4"
+    "mbed": "~3.0.2",
+    "mbed-cpputest": "~0.0.7"
   },
   "targetDependencies": {},
   "bin": "./source"
