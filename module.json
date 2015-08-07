@@ -1,5 +1,5 @@
 {
-  "name": "mbed-example-asynch-spi",
+  "name": "example-asynch-spi",
   "version": "0.0.5",
   "description": "Asynch SPI example",
   "private": true,
@@ -18,7 +18,7 @@
   "extraIncludes": [],
   "dependencies": {
     "mbed": "~3.0.2",
-    "mbed-cpputest": "~0.0.7"
+    "cpputest": "~0.0.7"
   },
   "targetDependencies": {},
   "bin": "./source"
