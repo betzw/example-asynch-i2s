@@ -71,7 +71,7 @@ private:
     void compare_buffers(uint32_t len) {
          for (uint32_t i = 0; i < len; i ++) {
             if (tx_buf[i] != rx_buf[i]) {
-                printf("MISMATCH at position %u: expected %d, got %d\r\n", i, (int)tx_buf[i], (int)rx_buf[i]);
+                printf("MISMATCH at position %lu: expected %d, got %d\r\n", i, (int)tx_buf[i], (int)rx_buf[i]);
             }
         }
     }
