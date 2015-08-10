@@ -5,7 +5,6 @@
   "private": true,
   "keywords": [
     "mbed",
-    "cpputest",
     "spi"
   ],
   "author": "brendan.moran@arm.com",
@@ -17,7 +16,7 @@
   ],
   "extraIncludes": [],
   "dependencies": {
-    "mbed-core": "~0.5.0"
+    "mbed-drivers": "~0.6.0"
   },
   "targetDependencies": {},
   "bin": "./source"

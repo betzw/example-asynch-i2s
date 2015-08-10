@@ -1,6 +1,6 @@
 
 /* mbed Microcontroller Library
- * Copyright (c) 2013 ARM Limited
+ * Copyright (c) 2015 ARM Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -107,6 +107,7 @@ void app_start(int, char*[]) {
 
 #else
 void app_start(int, char*[]) {
+    printf("The target does not support SPI asynch API.\r\n");
 }
 #endif
 
