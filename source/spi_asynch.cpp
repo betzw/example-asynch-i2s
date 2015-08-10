@@ -58,7 +58,7 @@ public:
         printf("Starting short transfer test\r\n");
         init_rx_buffer();
         cs = 0;
-        printf("Res is %d\r\n", spi.transfer(tx_buf, SHORT_XFR, rx_buf, SHORT_XFR, event_callback_t(this, &SPITest::short_transfer_complete_cb), SPI_EVENT_COMPLETE));
+        printf("Res is %d\r\n", spi.transfer(tx_buf, SHORT_XFR, rx_buf, SHORT_XFR, SPI::event_callback_t(this, &SPITest::short_transfer_complete_cb), SPI_EVENT_COMPLETE));
     }
 
 private:
@@ -76,17 +76,21 @@ private:
         }
     }
 
-    void short_transfer_complete_cb(int narg) {
+    void short_transfer_complete_cb(Buffer tx_buffer, Buffer rx_buffer, int narg) {
+        (void)tx_buffer;
+        (void)rx_buffer;
         cs = 1;
         printf("Short transfer DONE, event is %d\r\n", narg);
         compare_buffers(SHORT_XFR);
         printf("Starting long transfer test\r\n");
         init_rx_buffer();
         cs = 0;
-        printf("Res is %d\r\n", spi.transfer(tx_buf, LONG_XFR, rx_buf, LONG_XFR, event_callback_t(this, &SPITest::long_transfer_complete_cb), SPI_EVENT_COMPLETE));
+        printf("Res is %d\r\n", spi.transfer(tx_buf, LONG_XFR, rx_buf, LONG_XFR, SPI::event_callback_t(this, &SPITest::long_transfer_complete_cb), SPI_EVENT_COMPLETE));
     }
 
-    void long_transfer_complete_cb(int narg) {
+    void long_transfer_complete_cb(Buffer tx_buffer, Buffer rx_buffer, int narg) {
+        (void)tx_buffer;
+        (void)rx_buffer;
         cs = 1;
         printf("Long transfer DONE, event is %d\r\n", narg);
         compare_buffers(LONG_XFR);
