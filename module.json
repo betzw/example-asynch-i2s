@@ -1,6 +1,6 @@
 {
   "name": "example-asynch-spi",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Asynch SPI example",
   "private": true,
   "keywords": [
