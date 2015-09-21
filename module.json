@@ -15,7 +15,7 @@
   ],
   "extraIncludes": [],
   "dependencies": {
-    "mbed-drivers": "~0.6.0"
+    "mbed-drivers": "~0.8.0"
   },
   "targetDependencies": {},
   "bin": "./source"
