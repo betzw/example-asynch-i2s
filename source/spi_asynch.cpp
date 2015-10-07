@@ -17,7 +17,7 @@
 #include "mbed.h"
 #include <stdio.h>
 #include "minar/minar.h"
-#include "mbed-util/Event.h"
+#include "core-util/Event.h"
 
 #if DEVICE_SPI_ASYNCH
 
@@ -58,7 +58,11 @@ public:
         printf("Starting short transfer test\r\n");
         init_rx_buffer();
         cs = 0;
-        printf("Res is %d\r\n", spi.transfer(tx_buf, SHORT_XFR, rx_buf, SHORT_XFR, SPI::event_callback_t(this, &SPITest::short_transfer_complete_cb), SPI_EVENT_COMPLETE));
+        printf("Res is %d\r\n", spi.transfer()
+            .tx(tx_buf, SHORT_XFR)
+            .rx(rx_buf, SHORT_XFR)
+            .callback(SPI::event_callback_t(this, &SPITest::short_transfer_complete_cb), SPI_EVENT_COMPLETE)
+            .apply());
     }
 
 private:
@@ -85,7 +89,11 @@ private:
         printf("Starting long transfer test\r\n");
         init_rx_buffer();
         cs = 0;
-        printf("Res is %d\r\n", spi.transfer(tx_buf, LONG_XFR, rx_buf, LONG_XFR, SPI::event_callback_t(this, &SPITest::long_transfer_complete_cb), SPI_EVENT_COMPLETE));
+        printf("Res is %d\r\n", spi.transfer()
+            .tx(tx_buf, LONG_XFR)
+            .rx(rx_buf, LONG_XFR)
+            .callback(SPI::event_callback_t(this, &SPITest::long_transfer_complete_cb), SPI_EVENT_COMPLETE)
+            .apply());
     }
 
     void long_transfer_complete_cb(Buffer tx_buffer, Buffer rx_buffer, int narg) {
