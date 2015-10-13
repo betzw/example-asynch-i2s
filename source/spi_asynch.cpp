@@ -35,7 +35,8 @@
 
 #if !defined(YOTTA_CFG_HARDWARE_TEST_PINS_SPI_MISO) || !defined(YOTTA_CFG_HARDWARE_TEST_PINS_SPI_MOSI) || \
     !defined(YOTTA_CFG_HARDWARE_TEST_PINS_SPI_SCLK) || !defined(YOTTA_CFG_HARDWARE_TEST_PINS_SPI_SSEL)
-#error This example requires a target to define hw spi test pins
+#error This example requires SPI test pins to be defined. Please define the hardware.test-pins.spi.miso/ \
+    mosi/sclk/ssel yotta confing values
 #endif
 
 using namespace minar;
