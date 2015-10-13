@@ -33,13 +33,9 @@
 #define TEST_BYTE_RX TEST_BYTE3
 #define TEST_BYTE_TX_BASE TEST_BYTE5
 
-#if defined(TARGET_K64F)
-#define TEST_MOSI_PIN PTD2
-#define TEST_MISO_PIN PTD3
-#define TEST_SCLK_PIN PTD1
-#define TEST_CS_PIN   PTD0
-#else
-#error Target not supported
+#if !defined(YOTTA_CFG_HARDWARE_TEST_PINS_SPI_MISO) || !defined(YOTTA_CFG_HARDWARE_TEST_PINS_SPI_MOSI) || \
+    !defined(YOTTA_CFG_HARDWARE_TEST_PINS_SPI_SCLK) || !defined(YOTTA_CFG_HARDWARE_TEST_PINS_SPI_SSEL)
+#error This example requires a target to define hw spi test pins
 #endif
 
 using namespace minar;
@@ -47,7 +43,8 @@ using namespace minar;
 class SPITest {
 
 public:
-    SPITest(): spi(TEST_MOSI_PIN, TEST_MISO_PIN, TEST_SCLK_PIN), cs(TEST_CS_PIN) {
+    SPITest(): spi(YOTTA_CFG_HARDWARE_TEST_PINS_SPI_MOSI, YOTTA_CFG_HARDWARE_TEST_PINS_SPI_MISO,
+        YOTTA_CFG_HARDWARE_TEST_PINS_SPI_SCLK), cs(YOTTA_CFG_HARDWARE_TEST_PINS_SPI_SSEL) {
         for (uint32_t i = 0; i < sizeof(tx_buf); i++) {
             tx_buf[i] = i + TEST_BYTE_TX_BASE;
         }
