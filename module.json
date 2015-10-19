@@ -4,7 +4,8 @@
   "description": "Asynch SPI example",
   "keywords": [
     "mbed",
-    "spi"
+    "spi",
+    "mbed-official"
   ],
   "author": "brendan.moran@arm.com",
   "licenses": [
@@ -15,7 +16,7 @@
   ],
   "extraIncludes": [],
   "dependencies": {
-    "mbed-drivers": "~0.10.0"
+    "mbed-drivers": "~0.11.0"
   },
   "targetDependencies": {},
   "bin": "./source"
