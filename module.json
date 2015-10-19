@@ -1,6 +1,6 @@
 {
   "name": "example-asynch-spi",
-  "version": "0.5.0",
+  "version": "1.0.0",
   "description": "Asynch SPI example",
   "keywords": [
     "mbed",
