@@ -19,11 +19,26 @@ To build and run this example the following requirements are necessary:
 
 ### Pins
 
-MISO and MOSI pin definitions are target specific - the code and the physical board must both be using the same pins:
+MISO, MOSI and SSEL pin definitions are target-specific. To function correctly, the code and the physical board must both be using the same pins.  Follow these steps to determine which pins the code is configured to use.
 
-1. To know which pins the code is looking for, see the ``spi_asynch.cpp`` file for this sample. The pins are defined as ``TEST_MOSI_PIN`` and ``TEST_MISO_PIN``.
+1. First, find the pin references in the source files.  In this example, view ``spi_asynch.cpp``. The pin references are ``YOTTA_CFG_HARDWARE_TEST_PINS_SPI_MISO``, ``YOTTA_CFG_HARDWARE_TEST_PINS_SPI_MOSI`` and ``YOTTA_CFG_HARDWARE_TEST_PINS_SPI_SSEL``.
 
-2. To know where on your board those pins are, please look at its [pinout picture](http://developer.mbed.org/platforms/FRDM-K64F/#overview).
+2. Next, find the target-specific pin definitions corresponding to the pin references in the target's ``target.json`` file. The file is located at ``yotta_targets/frdm-k64f-gcc/target.json``.
+
+    Each keyword in the pin reference represents a level in the target configuration structure.  To find what YOTTA_CFG_HARDWARE_TEST_PINS_SPI resolves to, look under config/hardware/test-pins/spi.
+
+    The spi pins for K64F are:
+
+    ```
+    "spi": {
+      "mosi": "PTD2",
+      "miso": "PTD3",
+      "sclk": "PTD1",
+      "ssel": "PTD0"
+    }
+    ```
+
+3. Finally, locate those pins on the board's [pinout picture](http://developer.mbed.org/platforms/FRDM-K64F/#overview).
 
 ### Getting started
 
