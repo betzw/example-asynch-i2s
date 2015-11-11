@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "mbed.h"
+#include "mbed-drivers/mbed.h"
 #include <stdio.h>
 #include "minar/minar.h"
 #include "core-util/Event.h"
