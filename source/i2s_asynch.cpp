@@ -15,11 +15,12 @@
  * limitations under the License.
  */
 #include "mbed-drivers/mbed.h"
+#include "mbed-drivers/I2S.h"
 #include <stdio.h>
 #include "minar/minar.h"
 #include "core-util/Event.h"
 
-#if DEVICE_SPI_ASYNCH
+#if DEVICE_I2S
 
 #define SHORT_XFR 3
 #define LONG_XFR 16
@@ -33,19 +34,19 @@
 #define TEST_BYTE_RX TEST_BYTE3
 #define TEST_BYTE_TX_BASE TEST_BYTE5
 
-#if !defined(YOTTA_CFG_HARDWARE_TEST_PINS_SPI_MISO) || !defined(YOTTA_CFG_HARDWARE_TEST_PINS_SPI_MOSI) || \
-    !defined(YOTTA_CFG_HARDWARE_TEST_PINS_SPI_SCLK) || !defined(YOTTA_CFG_HARDWARE_TEST_PINS_SPI_SSEL)
-#error This example requires SPI test pins to be defined. Please define the hardware.test-pins.spi.miso/ \
+#if !defined(YOTTA_CFG_HARDWARE_TEST_PINS_I2S_MISO) || !defined(YOTTA_CFG_HARDWARE_TEST_PINS_I2S_MOSI) || \
+    !defined(YOTTA_CFG_HARDWARE_TEST_PINS_I2S_SCLK) || !defined(YOTTA_CFG_HARDWARE_TEST_PINS_I2S_SSEL)
+#error This example requires I2S test pins to be defined. Please define the hardware.test-pins.i2s.miso/ \
     mosi/sclk/ssel yotta confing values
 #endif
 
 using namespace minar;
 
-class SPITest {
+class I2STest {
 
 public:
-    SPITest(): spi(YOTTA_CFG_HARDWARE_TEST_PINS_SPI_MOSI, YOTTA_CFG_HARDWARE_TEST_PINS_SPI_MISO,
-        YOTTA_CFG_HARDWARE_TEST_PINS_SPI_SCLK), cs(YOTTA_CFG_HARDWARE_TEST_PINS_SPI_SSEL) {
+    I2STest(): i2s(YOTTA_CFG_HARDWARE_TEST_PINS_I2S_MOSI, YOTTA_CFG_HARDWARE_TEST_PINS_I2S_MISO,
+        YOTTA_CFG_HARDWARE_TEST_PINS_I2S_SCLK), cs(YOTTA_CFG_HARDWARE_TEST_PINS_I2S_SSEL) {
         for (uint32_t i = 0; i < sizeof(tx_buf); i++) {
             tx_buf[i] = i + TEST_BYTE_TX_BASE;
         }
@@ -56,10 +57,10 @@ public:
         printf("Starting short transfer test\r\n");
         init_rx_buffer();
         cs = 0;
-        printf("Res is %d\r\n", spi.transfer()
+        printf("Res is %d\r\n", i2s.transfer()
             .tx(tx_buf, SHORT_XFR)
             .rx(rx_buf, SHORT_XFR)
-            .callback(SPI::event_callback_t(this, &SPITest::short_transfer_complete_cb), SPI_EVENT_COMPLETE)
+            .callback(I2S::event_callback_t(this, &I2STest::short_transfer_complete_cb), I2S_EVENT_RX_COMPLETE)
             .apply());
     }
 
@@ -87,10 +88,10 @@ private:
         printf("Starting long transfer test\r\n");
         init_rx_buffer();
         cs = 0;
-        printf("Res is %d\r\n", spi.transfer()
+        printf("Res is %d\r\n", i2s.transfer()
             .tx(tx_buf, LONG_XFR)
             .rx(rx_buf, LONG_XFR)
-            .callback(SPI::event_callback_t(this, &SPITest::long_transfer_complete_cb), SPI_EVENT_COMPLETE)
+            .callback(I2S::event_callback_t(this, &I2STest::long_transfer_complete_cb), I2S_EVENT_RX_COMPLETE)
             .apply());
     }
 
@@ -104,26 +105,19 @@ private:
     }
 
 private:
-    SPI spi;
+    I2S i2s;
     DigitalOut cs;
     uint8_t tx_buf[LONG_XFR];
     uint8_t rx_buf[LONG_XFR];
 };
 
 void app_start(int, char*[]) {
-    static SPITest test;
-    // set 115200 baud rate for stdout
-    static Serial pc(USBTX, USBRX);
-    pc.baud(115200);
-    Scheduler::postCallback(mbed::util::FunctionPointer0<void>(&test, &SPITest::start).bind());
+    static I2STest test;
+    Scheduler::postCallback(mbed::util::FunctionPointer0<void>(&test, &I2STest::start).bind());
 }
 
 #else
 void app_start(int, char*[]) {
-    // set 115200 baud rate for stdout
-    static Serial pc(USBTX, USBRX);
-    pc.baud(115200);
-    printf("The target does not support SPI asynch API.\r\n");
+    printf("The target does not support I2S asynch API.\r\n");
 }
 #endif
-

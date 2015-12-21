@@ -1,0 +1,14 @@
+{
+    "hardware" : {
+        "test" : {
+	    "pins" : {
+	        "i2s": {
+		    "miso": "SPI_MISO",
+		    "mosi": "SPI_MOSI",
+		    "sclk": "SPI_SCK",
+		    "ssel": "NC"		    
+		}
+	    }	  
+        }
+    }	
+}
