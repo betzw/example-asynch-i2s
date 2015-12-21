@@ -34,10 +34,10 @@
 #define TEST_BYTE_RX TEST_BYTE3
 #define TEST_BYTE_TX_BASE TEST_BYTE5
 
-#if !defined(YOTTA_CFG_HARDWARE_TEST_PINS_I2S_MISO) || !defined(YOTTA_CFG_HARDWARE_TEST_PINS_I2S_MOSI) || \
-    !defined(YOTTA_CFG_HARDWARE_TEST_PINS_I2S_SCLK) || !defined(YOTTA_CFG_HARDWARE_TEST_PINS_I2S_SSEL)
-#error This example requires I2S test pins to be defined. Please define the hardware.test-pins.i2s.miso/ \
-    mosi/sclk/ssel yotta confing values
+#if !defined(YOTTA_CFG_HARDWARE_TEST_PINS_I2S_DPIN) || !defined(YOTTA_CFG_HARDWARE_TEST_PINS_I2S_SCLK) || \
+    !defined(YOTTA_CFG_HARDWARE_TEST_PINS_I2S_WSEL) || !defined(YOTTA_CFG_HARDWARE_TEST_PINS_I2S_FDPX)
+#error This example requires I2S test pins to be defined. Please define the hardware.test-pins.i2s.dpin/ \
+    sclk/wsel/fdpx yotta confing values
 #endif
 
 using namespace minar;
@@ -45,8 +45,8 @@ using namespace minar;
 class I2STest {
 
 public:
-    I2STest(): i2s(YOTTA_CFG_HARDWARE_TEST_PINS_I2S_MOSI, YOTTA_CFG_HARDWARE_TEST_PINS_I2S_MISO,
-        YOTTA_CFG_HARDWARE_TEST_PINS_I2S_SCLK), cs(YOTTA_CFG_HARDWARE_TEST_PINS_I2S_SSEL) {
+    I2STest(): i2s(YOTTA_CFG_HARDWARE_TEST_PINS_I2S_DPIN, YOTTA_CFG_HARDWARE_TEST_PINS_I2S_SCLK,
+        YOTTA_CFG_HARDWARE_TEST_PINS_I2S_WSEL), cs(YOTTA_CFG_HARDWARE_TEST_PINS_I2S_FDPX) {
         for (uint32_t i = 0; i < sizeof(tx_buf); i++) {
             tx_buf[i] = i + TEST_BYTE_TX_BASE;
         }

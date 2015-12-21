@@ -3,12 +3,15 @@
         "test" : {
 	    "pins" : {
 	        "i2s": {
-		    "miso": "SPI_MISO",
-		    "mosi": "SPI_MOSI",
-		    "sclk": "SPI_SCK",
-		    "ssel": "NC"		    
+		    "dpin": "PB_15",
+		    "sclk": "PB_13",
+		    "wsel": "NC",
+		    "wsel_alt": "PB_12",
+		    "fdpx": "NC",
+		    "fdpx_alt": "PB_14"
 		}
 	    }	  
         }
     }	
 }
+
