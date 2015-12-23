@@ -21,8 +21,7 @@
 
 #if DEVICE_I2S
 
-#define SHORT_XFR 3
-#define LONG_XFR 16
+#define XFER_SIZE  (2 * 8192)
 #define TEST_BYTE0 0x00
 #define TEST_BYTE1 0x11
 #define TEST_BYTE2 0xFF
@@ -41,6 +40,12 @@
 #error This example requires I2S test pins to be defined. Please define the hardware.test-pins.i2s.dpin/sclk/wsel/fdpx yotta confing values
 #endif
 
+#ifndef NDEBUG
+/* betzw: enable debugging while using sleep modes */
+#include "x-nucleo-common/DbgMCU.h"
+static DbgMCU enable_dbg;
+#endif // !NDEBUG
+
 using namespace minar;
 
 class I2STest {
@@ -54,13 +59,12 @@ public:
     }
     
     void start() {
-        printf("Starting short transfer test\r\n");
-        init_rx_buffer();
+        printf("Starting transfer test\r\n");
 
         printf("Res is %d\r\n", i2s.transfer()
-	       .tx(tx_buf, SHORT_XFR)
-	       .rx(rx_buf, SHORT_XFR)
-	       .callback(I2S::event_callback_t(this, &I2STest::short_transfer_complete_cb), I2S_EVENT_RX_COMPLETE)
+	       .tx(tx_buf, XFER_SIZE)
+	       .callback(I2S::event_callback_t(this, &I2STest::transfer_complete_cb), I2S_EVENT_ALL)
+	       .circular(true)
 	       .apply());
     }
 
@@ -79,35 +83,17 @@ private:
         }
     }
 
-    void short_transfer_complete_cb(Buffer tx_buffer, Buffer rx_buffer, int narg) {
+    void transfer_complete_cb(Buffer tx_buffer, Buffer rx_buffer, int narg) {
         (void)tx_buffer;
         (void)rx_buffer;
 
-        printf("Short transfer DONE, event is %d\r\n", narg);
-        compare_buffers(SHORT_XFR);
-        printf("Starting long transfer test\r\n");
-        init_rx_buffer();
-
-        printf("Res is %d\r\n", i2s.transfer()
-	       .tx(tx_buf, LONG_XFR)
-	       .rx(rx_buf, LONG_XFR)
-	       .callback(I2S::event_callback_t(this, &I2STest::long_transfer_complete_cb), I2S_EVENT_RX_COMPLETE)
-	       .apply());
-    }
-
-    void long_transfer_complete_cb(Buffer tx_buffer, Buffer rx_buffer, int narg) {
-        (void)tx_buffer;
-        (void)rx_buffer;
-
-        printf("Long transfer DONE, event is %d\r\n", narg);
-        compare_buffers(LONG_XFR);
-        printf("**** Test done ****\r\n");
+        printf("Transfer: event is %d\r\n", narg);
     }
 
 private:
-    I2S i2s;
-    uint8_t tx_buf[LONG_XFR];
-    uint8_t rx_buf[LONG_XFR];
+	I2S i2s;
+	uint8_t tx_buf[XFER_SIZE] __attribute((aligned (32)));
+	uint8_t rx_buf[XFER_SIZE] __attribute((aligned (32)));
 };
 
 void app_start(int, char*[]) {

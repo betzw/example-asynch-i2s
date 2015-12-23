@@ -5,8 +5,8 @@
 	        "i2s": {
 		    "dpin": "PB_15",
 		    "sclk": "PB_13",
-		    "wsel": "NC",
-		    "wsel_alt": "PB_12",
+		    "wsel_alt": "NC",
+		    "wsel": "PB_12",
 		    "fdpx": "NC",
 		    "fdpx_alt": "PB_14"
 		}

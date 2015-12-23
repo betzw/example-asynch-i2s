@@ -16,7 +16,8 @@
   ],
   "extraIncludes": [],
   "dependencies": {
-    "mbed-drivers": "*"
+    "mbed-drivers": "*",
+    "x-nucleo-common": "*"
   },
   "targetDependencies": {},
   "bin": "./source"
