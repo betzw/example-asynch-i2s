@@ -92,8 +92,8 @@ private:
 
 private:
 	I2S i2s;
-	uint8_t tx_buf[XFER_SIZE] __attribute((aligned (32)));
-	uint8_t rx_buf[XFER_SIZE] __attribute((aligned (32)));
+	uint8_t tx_buf[XFER_SIZE];
+	uint8_t rx_buf[XFER_SIZE];
 };
 
 void app_start(int, char*[]) {
