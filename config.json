@@ -1,17 +1,30 @@
 {
-    "hardware" : {
-        "test" : {
-	    "pins" : {
-	        "i2s": {
-		    "dpin": "PB_15",
-		    "sclk": "PB_13",
-		    "wsel_alt": "NC",
-		    "wsel": "PB_12",
-		    "fdpx": "NC",
-		    "fdpx_alt": "PB_14"
-		}
-	    }	  
-        }
-    }	
+  "hardware" : {
+    "test-pins" : {
+      "i2s": {
+        "dpin": "PB_15",
+        "sclk": "PB_13",
+       	"wsel_alt": "NC",
+	"wsel": "PB_12",
+	"fdpx": "NC",
+	"fdpx_alt": "PB_14",
+	"mclk_alt": "NC",
+	"mclk": "PC_6"
+      },
+      "spi": {
+        "mosi": "SPI_MOSI",
+       	"miso": "SPI_MISO",
+        "sclk": "SPI_SCK",
+        "ssel": "SPI_CS"
+      },
+      "i2c": {
+        "sda": "I2C_SDA",
+        "scl": "I2C_SCL"
+      },
+      "serial": {
+        "tx": "PA_9",
+        "rx": "PC_7"
+      }
+    }
+  }
 }
-

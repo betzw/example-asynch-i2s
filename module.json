@@ -17,7 +17,8 @@
   "extraIncludes": [],
   "dependencies": {
     "mbed-drivers": "*",
-    "x-nucleo-common": "*"
+    "x-nucleo-common": "*",
+    "sta350bw": "*"
   },
   "targetDependencies": {},
   "bin": "./source"
