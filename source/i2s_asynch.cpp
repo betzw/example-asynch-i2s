@@ -52,6 +52,8 @@ static DbgMCU enable_dbg;
 
 using namespace minar;
 
+#include "my_song.inc"
+
 class I2STest {
 
 public:
@@ -64,10 +66,10 @@ public:
     for (uint32_t i = 0; i < sizeof(tx_buf); i++) {
     	     tx_buf[i] = 0x0;
    	}
-	for (uint32_t i = 0; i < sizeof(tx_buf); i +=73) {
+	for (uint32_t i = sizeof(tx_buf)/2; i < sizeof(tx_buf); i +=73) {
 	     tx_buf[i] = i + TEST_BYTE_TX_BASE;
 	}
-	if(sta350.Init(0xFF, 44100)) { // betzw: start with master channel muted
+	if(sta350.Init(13, 32000)) {
 		printf("%s(%d): sta350bw init failed!\r\n", __func__, __LINE__);
 		exit(-1);
 	}
@@ -75,22 +77,22 @@ public:
 	printf("\r\nTransfer test inited!\r\n");
     }
     
-    void unMute(void) {
-    	printf("Switching volume on now!\r\n");
+    void changeVolume(void) {
+    	printf("Changing volume now!\r\n");
 
-    	sta350.SetVolume(0x0, 50);
+    	sta350.SetVolume(0x0, 31);
     }
 
     void start() {
         printf("Starting transfer test\r\n");
 
         printf("Res is %d\r\n", sta350.dev_i2s.transfer()
-	       .tx(tx_buf, XFER_SIZE)
+	       .tx((void*)my_song, sizeof(my_song))
 	       .callback(I2S::event_callback_t(this, &I2STest::transfer_complete_cb), I2S_EVENT_ALL)
 	       .circular(true)
 	       .apply());
 
-        Scheduler::postCallback(mbed::util::FunctionPointer0<void>(this, &I2STest::unMute).bind()).delay(milliseconds(1500));
+        Scheduler::postCallback(mbed::util::FunctionPointer0<void>(this, &I2STest::changeVolume).bind()).delay(milliseconds(1500));
     }
 
 private:
@@ -119,7 +121,7 @@ private:
         	printf("\r\nERROR!\r\n");
         }
     	if(tmp != 0x7F) {
-    		printf("status=0x%x\r\n", tmp);
+    		printf("\r\nstatus=0x%x\r\n", tmp);
     	}
     }
 
