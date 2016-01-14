@@ -23,17 +23,6 @@
 
 #if DEVICE_I2S
 
-#define XFER_SIZE  (2 * 8192)
-#define TEST_BYTE0 0x00
-#define TEST_BYTE1 0x11
-#define TEST_BYTE2 0xFF
-#define TEST_BYTE3 0xAA
-#define TEST_BYTE4 0x55
-#define TEST_BYTE5 0x50
-
-#define TEST_BYTE_RX TEST_BYTE3
-#define TEST_BYTE_TX_BASE TEST_BYTE5
-
 #if !defined(YOTTA_CFG_HARDWARE_TEST_PINS_I2S_DPIN) ||	\
     !defined(YOTTA_CFG_HARDWARE_TEST_PINS_I2S_SCLK) ||	\
     !defined(YOTTA_CFG_HARDWARE_TEST_PINS_I2S_WSEL) ||	\
@@ -54,82 +43,91 @@ using namespace minar;
 
 #include "my_song.inc"
 
+#define DMA_BUF_SAMPLE_NUM  (512)
+#define NR_CHANNELS         (2)
+#define NR_BYTES_PER_SAMPLE (NR_CHANNELS*sizeof(int16_t))
+
+#define DMA_BUFFER_SIZE     (DMA_BUF_SAMPLE_NUM*NR_BYTES_PER_SAMPLE)
+#define DMA_BUF_HALF_SIZE   (DMA_BUFFER_SIZE / 2)
+
+static int8_t dma_buffer[DMA_BUFFER_SIZE];
+static unsigned int song_pos = 0;
+
 class I2STest {
 
 public:
     I2STest():
+		toggle1(PC_0),
+		toggle2(PC_1),
     	dev_i2c(YOTTA_CFG_HARDWARE_TEST_PINS_I2C_SDA, YOTTA_CFG_HARDWARE_TEST_PINS_I2C_SCL),
     	sta350(&dev_i2c, PA_10,
     		YOTTA_CFG_HARDWARE_TEST_PINS_I2S_DPIN, YOTTA_CFG_HARDWARE_TEST_PINS_I2S_SCLK,
 			YOTTA_CFG_HARDWARE_TEST_PINS_I2S_WSEL, YOTTA_CFG_HARDWARE_TEST_PINS_I2S_FDPX,
 			YOTTA_CFG_HARDWARE_TEST_PINS_I2S_MCLK) {
-    for (uint32_t i = 0; i < sizeof(tx_buf); i++) {
-    	     tx_buf[i] = 0x0;
-   	}
-	for (uint32_t i = sizeof(tx_buf)/2; i < sizeof(tx_buf); i +=73) {
-	     tx_buf[i] = i + TEST_BYTE_TX_BASE;
-	}
-	if(sta350.Init(13, 32000)) {
-		printf("%s(%d): sta350bw init failed!\r\n", __func__, __LINE__);
-		exit(-1);
-	}
+    	// reset debug toggles
+    	toggle1 = toggle2 = 0;
 
-	printf("\r\nTransfer test inited!\r\n");
+    	if(sta350.Init(13, 32000)) {
+    		printf("%s(%d): sta350bw init failed!\r\n", __func__, __LINE__);
+    		exit(-1);
+    	}
+
+    	memcpy(&dma_buffer[0], &my_song[song_pos], DMA_BUFFER_SIZE);
+    	song_pos = DMA_BUFFER_SIZE/sizeof(int16_t);
+
+    	printf("\r\nTransfer test inited!\r\n");
     }
     
     void changeVolume(void) {
     	printf("Changing volume now!\r\n");
 
-    	sta350.SetVolume(0x0, 31);
+    	sta350.SetVolume(0x0, 77);
     }
 
     void start() {
         printf("Starting transfer test\r\n");
 
         printf("Res is %d\r\n", sta350.dev_i2s.transfer()
-	       .tx((void*)my_song, sizeof(my_song))
+	       .tx((void*)dma_buffer, sizeof(dma_buffer))
 	       .callback(I2S::event_callback_t(this, &I2STest::transfer_complete_cb), I2S_EVENT_ALL)
 	       .circular(true)
 	       .apply());
 
-        Scheduler::postCallback(mbed::util::FunctionPointer0<void>(this, &I2STest::changeVolume).bind()).delay(milliseconds(1500));
+        Scheduler::postCallback(mbed::util::FunctionPointer0<void>(this, &I2STest::changeVolume).bind()).delay(milliseconds(3000));
     }
 
 private:
-    void init_rx_buffer() {
-        for (uint32_t i = 0; i < sizeof(rx_buf); i ++) {
-            rx_buf[i] = 0;
-        }
-    }
-
-    void compare_buffers(uint32_t len) {
-	for (uint32_t i = 0; i < len; i ++) {
-            if (tx_buf[i] != rx_buf[i]) {
-                printf("MISMATCH at position %lu: expected %d, got %d\r\n", i, (int)tx_buf[i], (int)rx_buf[i]);
-            }
-        }
-    }
-
     void transfer_complete_cb(Buffer tx_buffer, Buffer rx_buffer, int narg) {
         (void)tx_buffer;
         (void)rx_buffer;
-        (void)narg;
 
-        uint8_t tmp;
+        unsigned int dma_pos;
 
-    	if(sta350.dev_i2c->i2c_read(&tmp, 0x38 /* devAddr */, 0x2D /* STA350BW_STATUS */, 1) != 0) {
-        	printf("\r\nERROR!\r\n");
+        toggle1 = 1;
+
+        if(((song_pos * sizeof(int16_t)) + DMA_BUF_HALF_SIZE) > sizeof(my_song)) {
+        	song_pos = 0;
         }
-    	if(tmp != 0x7F) {
-    		printf("\r\nstatus=0x%x\r\n", tmp);
-    	}
+
+        if(narg & I2S_EVENT_TX_COMPLETE) dma_pos = DMA_BUF_HALF_SIZE;
+
+#if 0
+    	printf("---\r\n");
+    	printf("dma_pos = %u\r\n", dma_pos);
+    	printf("song_pos = %u\r\n", song_pos);
+#endif
+
+    	memcpy(&dma_buffer[dma_pos], &my_song[song_pos], DMA_BUF_HALF_SIZE);
+    	song_pos += (DMA_BUF_HALF_SIZE/sizeof(int16_t));
+
+    	toggle1 = 0;
     }
 
 private:
+    DigitalOut toggle1; // betzw: for debug only
+    DigitalOut toggle2; // betzw: for debug only
 	DevI2C dev_i2c;
     STA350BW sta350;
-	uint8_t tx_buf[XFER_SIZE];
-	uint8_t rx_buf[XFER_SIZE];
 };
 
 void app_start(int, char*[]) {
