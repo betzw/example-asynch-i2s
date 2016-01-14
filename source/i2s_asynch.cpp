@@ -67,7 +67,7 @@ public:
     	// reset debug toggles
     	toggle1 = toggle2 = 0;
 
-    	if(sta350.Init(13, 32000)) {
+    	if(sta350.Init(73, 32000)) {
     		printf("%s(%d): sta350bw init failed!\r\n", __func__, __LINE__);
     		exit(-1);
     	}
@@ -81,7 +81,7 @@ public:
     void changeVolume(void) {
     	printf("Changing volume now!\r\n");
 
-    	sta350.SetVolume(0x0, 77);
+    	sta350.SetVolume(0x0, 113);
     }
 
     void start() {
@@ -93,7 +93,7 @@ public:
 	       .circular(true)
 	       .apply());
 
-        Scheduler::postCallback(mbed::util::FunctionPointer0<void>(this, &I2STest::changeVolume).bind()).delay(milliseconds(3000));
+        Scheduler::postCallback(mbed::util::FunctionPointer0<void>(this, &I2STest::changeVolume).bind()).delay(milliseconds(3500));
     }
 
 private:
