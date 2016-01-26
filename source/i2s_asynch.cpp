@@ -68,7 +68,7 @@ public:
     	// reset debug toggles
     	toggle1 = toggle2 = 0;
 
-    	if(sta350.Init(73, 32000)) {
+    	if(sta350.Init(73, 48000)) {
     		printf("%s(%d): sta350bw init failed!\r\n", __func__, __LINE__);
     		exit(-1);
     	}
