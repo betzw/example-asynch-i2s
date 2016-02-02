@@ -16,7 +16,7 @@
   ],
   "extraIncludes": [],
   "dependencies": {
-    "minar": "<1.0.3",
+    "minar": "*",
     "mbed-drivers": "*",
     "x-nucleo-common": "*",
     "sta350bw": "*"

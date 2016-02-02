@@ -82,7 +82,7 @@ public:
     	toggle1 = toggle2 = 0;
 
     	/* configure sound terminal */
-    	if(sta350.Init(92, AUDIO_FREQ)) {
+    	if(sta350.Init(37, AUDIO_FREQ)) {
 	    printf("%s(%d): sta350bw init failed!\r\n", __func__, __LINE__);
 	    exit(-1);
     	}
