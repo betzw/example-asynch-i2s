@@ -51,6 +51,8 @@ static DbgMCU enable_dbg;
 
 using namespace minar;
 
+#define AUDIO_FREQ          (44100)
+
 #define DMA_BUF_SAMPLE_NUM  (110)
 #define NR_CHANNELS         (2)
 #define NR_BYTES_PER_SAMPLE (NR_CHANNELS*sizeof(int16_t))
@@ -80,13 +82,13 @@ public:
     	toggle1 = toggle2 = 0;
 
     	/* configure sound terminal */
-    	if(sta350.Init(92, 48000)) {
+    	if(sta350.Init(92, AUDIO_FREQ)) {
 	    printf("%s(%d): sta350bw init failed!\r\n", __func__, __LINE__);
 	    exit(-1);
     	}
 
     	/* configure I2S in reception */
-    	recv_i2s.audio_frequency(48000);
+    	recv_i2s.audio_frequency(AUDIO_FREQ);
     	recv_i2s.set_mode(MASTER_RX);
     	recv_i2s.format(16, 32);
 
