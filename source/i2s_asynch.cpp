@@ -121,7 +121,7 @@ public:
 	    .callback(I2S::event_callback_t(this, &I2STest::transfer_complete_cb), I2S_EVENT_ALL)
 	    .circular(true)
 	    .apply();
-	
+
         if(res != 0) {
 	    error("%s, %d: res=%d\r\n", __func__, __LINE__, res);
         }
@@ -196,7 +196,7 @@ private:
 	if(first_time) {
 	    first_time = false;
 	    start_transmission();
-	}
+        }
 #endif
 
 #ifdef COMPARE_BUFFERS
